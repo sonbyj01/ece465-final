@@ -21,3 +21,4 @@ func GenerateGraph2D(numPoints int) models.Graph2D {
 
 	return g
 }
+
