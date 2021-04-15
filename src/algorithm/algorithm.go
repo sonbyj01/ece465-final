@@ -2,8 +2,19 @@ package algorithm
 
 import "models"
 
-func Select(p models.Point2D, q models.Point2D, S models.Graph2D) {
-	for _, point := range S.Points {
+func Select(S models.Graph2D) (models.Point2D, models.Point2D) {
+	var p,q models.Point2D
+	for index, point := range S.Points {
+		if index == 0 {
+			p = point
+			continue
+		}
+
+		if index == 1 {
+			q = point
+			continue
+		}
+
 		// maximum y-value, then maximum x-value if y values are same
 		if p.YValue < point.YValue {
 			p = point
@@ -21,4 +32,5 @@ func Select(p models.Point2D, q models.Point2D, S models.Graph2D) {
 			}
 		}
 	}
+	return p, q
 }
