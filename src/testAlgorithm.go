@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bufio"
+	"algorithm"
 	"fmt"
 	"models"
 	"os"
@@ -21,11 +21,15 @@ func main() {
 		fmt.Errorf("ha")
 	}
 	file.Close()
-	g.Print()
 
-	file1, _ := os.Create("./sample/graph2d-100-copy.txt")
-	writer := bufio.NewWriter(file1)
-	g.Export(writer)
-	writer.Flush()
-	file1.Close()
+	p, q := algorithm.Select(*g)
+	fmt.Print(p)
+	fmt.Print(q)
+	//g.Print()
+	//
+	//file1, _ := os.Create("./sample/graph2d-100-copy.txt")
+	//writer := bufio.NewWriter(file1)
+	//g.Export(writer)
+	//writer.Flush()
+	//file1.Close()
 }
