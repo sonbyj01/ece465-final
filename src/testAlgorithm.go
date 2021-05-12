@@ -1,6 +1,7 @@
 package main
 
 import (
+	"algorithm"
 	"bufio"
 	"fmt"
 	"models"
@@ -9,7 +10,7 @@ import (
 )
 
 func main() {
-	abs, _ := filepath.Abs("./sample/graph2d-100.txt")
+	abs, _ := filepath.Abs("./sample/graph2d-1000.txt")
 	file, err := os.Open(abs)
 
 	if err != nil {
@@ -21,11 +22,49 @@ func main() {
 		fmt.Errorf("ha")
 	}
 	file.Close()
-	g.Print()
 
-	file1, _ := os.Create("./sample/graph2d-100-copy.txt")
+	var convex *models.Graph2D
+	convex = new(models.Graph2D)
+
+	p, q := algorithm.Select(g)
+	convex.Points = append(convex.Points, *p)
+	convex.Points = append(convex.Points, *q)
+	fmt.Println("p: ", *p)
+	fmt.Println("q: ", *q)
+
+	R, L := algorithm.Split(p, q, g)
+	//fmt.Println("R: ", *R)
+	//fmt.Println("L: ", *L)
+
+	//fmt.Println("p: ", *p)
+
+	algorithm.QuickHull(p, q, R, convex)
+
+	algorithm.QuickHull(q, p, L, convex)
+
+	//fmt.Println("q: ", *q)
+	//test := algorithm.FarthestPoint(p, q, R)
+	//test.Print()
+	//
+	//R1, _ := algorithm.Split(p, test, R)
+	//test1 := algorithm.FarthestPoint(p, test, R1)
+	//test1.Print()
+
+	//fmt.Println(L)
+
+	//p.Print()
+	//
+	//algorithm.QuickHull(p, q, R)
+	//
+	//q.Print()
+	//
+	//algorithm.QuickHull(q, p, L)
+
+	//g.Print()
+	//
+	file1, _ := os.Create("./sample/graph2d-1000-convex.txt")
 	writer := bufio.NewWriter(file1)
-	g.Export(writer)
+	convex.Export(writer)
 	writer.Flush()
 	file1.Close()
 }
