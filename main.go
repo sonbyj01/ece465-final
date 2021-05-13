@@ -61,11 +61,17 @@ func upload2d(c *gin.Context) {
 	}
 
 	// from testAlgorithm.go
-	algorithm.RunQuickHull(newFileName, "done-" + newFileName)
+	g, convex := algorithm.RunQuickHull(newFileName, "done-" + newFileName)
+	xOrig, yOrig := g.ExtractXY()
+	xConvex, yConvex := convex.ExtractXY()
 
 	c.JSON(http.StatusOK, gin.H {
 		"message": "file successfully uploaded",
 		"filename": "done-" + newFileName,
+		"xOrig": xOrig,
+		"yOrig": yOrig,
+		"xConvex": xConvex,
+		"yConvex": yConvex,
 	})
 }
 

@@ -49,6 +49,15 @@ func (p *Point2D) Print() {
 	fmt.Println(p)
 }
 
+func (g *Graph2D) ExtractXY() ([]float64, []float64) {
+	var xArray, yArray []float64
+	for _, ele := range g.Points {
+		xArray = append(xArray, ele.XValue)
+		yArray = append(yArray, ele.YValue)
+	}
+	return xArray, yArray
+}
+
 // Create : from points p and q, solves for A, B, C of standard linear form
 // mx - y - mx_1 + y_1 = 0
 func (l *Line) Create(p *Point2D, q *Point2D) {

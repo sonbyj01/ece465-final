@@ -92,7 +92,7 @@ func PruneAndSplit(p *models.Point2D, q *models.Point2D, r *models.Point2D, S *m
 	return U, L
 }
 
-func RunQuickHull(input string, output string) *models.Graph2D {
+func RunQuickHull(input string, output string) (*models.Graph2D, *models.Graph2D) {
 	inputAbs, _ := filepath.Abs("./tmp/" + input)
 	inputFile, _ := os.Open(inputAbs)
 	g, _ := models.Import(inputFile)
@@ -114,5 +114,5 @@ func RunQuickHull(input string, output string) *models.Graph2D {
 	writer.Flush()
 	outputFile.Close()
 
-	return convex
+	return g, convex
 }
