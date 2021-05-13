@@ -1,26 +1,23 @@
 import http from "../http-common";
 
 const upload = (file, onUploadProgress) => {
-    const formData = new FormData();
-    formData.append('file', file);
+  var formData = new FormData();
 
-    return http.post('/upload2d', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress,
-    }).then((resp) => {
-        if(resp.status === 200) {
-            console.log('file uploaded')
-        }
-    })
-}
+  formData.append("file", file);
 
-const getFile = () => {
-    return http.get("/file");
-}
+  return http.post("/upload2d", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    onUploadProgress,
+  });
+};
+
+const getFiles = () => {
+  return http.get("/files");
+};
 
 export default {
-    upload,
-    getFile
-}
+  upload,
+  getFiles,
+};

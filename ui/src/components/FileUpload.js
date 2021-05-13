@@ -1,89 +1,110 @@
 import React, { useState, useEffect } from "react";
 import UploadService from "../services/FileUploadService";
 
-const UploadFile = () => {
-    // declare and initialize react hooks
-    const [selectedFile, setSelectedFile] = useState(undefined);
+// import Plot from "react-plotly.js";
+
+import http from "../http-common";
+
+const UploadFiles = () => {
+    const [selectedFiles, setSelectedFiles] = useState(undefined);
+    const [currentFile, setCurrentFile] = useState(undefined);
     const [progress, setProgress] = useState(0);
     const [message, setMessage] = useState("");
-    const [fileInfo, setFileInfo] = useState([]);
+    const [fileInfos, setFileInfos] = useState([]);
 
-    // function selectFile to get selected files from input element
+    useEffect(() => {
+        UploadService.getFiles().then((response) => {
+            setFileInfos(response.data);
+        });
+    }, []);
+
     const selectFile = (event) => {
-        setSelectedFile(event.target.files[0])
+        setSelectedFiles(event.target.files);
     };
 
+    const test = () => {
+        setCurrentFile(selectedFiles[0]);
+        var formData = new FormData();
+        formData.append("file", currentFile);
+        http.post("/upload2d", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+    }
+
     const upload = () => {
+        let currentFile = selectedFiles[0];
+
         setProgress(0);
-        UploadService.upload(selectedFile, (event) => {
+        setCurrentFile(currentFile);
+
+        UploadService.upload(currentFile, (event) => {
             setProgress(Math.round((100 * event.loaded) / event.total));
         })
             .then((response) => {
                 setMessage(response.data.message);
-                return UploadService.getFile();
+                return UploadService.getFiles();
             })
-            .then((file) => {
-                setFileInfo(file.data);
+            .then((files) => {
+                setFileInfos(files.data);
             })
             .catch(() => {
                 setProgress(0);
-                setMessage("couldn't upload file");
+                setMessage("Could not upload the file!");
+                setCurrentFile(undefined);
             });
-        setSelectedFile(undefined);
-    }
 
-    useEffect(() => {
-        UploadService.getFile().then((response) => {
-            setFileInfo(response.data);
-        });
-    }, []);
+        setSelectedFiles(undefined);
+    };
 
     return (
         <div>
-            {selectedFile && (
-                <div className={"progress"}>
+            {currentFile && (
+                <div className="progress">
                     <div
-                        className={"progress-bar progress-bar-info progress-bar-striped"}
-                        role={"progressbar"}
+                        className="progress-bar progress-bar-info progress-bar-striped"
+                        role="progressbar"
                         aria-valuenow={progress}
-                        aria-valuemin={"0"}
-                        aria-valuemax={"100"}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
                         style={{ width: progress + "%" }}
-                        >
+                    >
                         {progress}%
                     </div>
                 </div>
             )}
 
-            <label className={"btn btn-default"}>
-                <input type={"file"} onChange={selectFile} />
+            <label className="btn btn-default">
+                <input type="file" onChange={selectFile} />
             </label>
 
             <button
-                className={"btn btn-success"}
-                disabled={!selectedFile}
-                onClick={upload}
-                >
+                className="btn btn-success"
+                disabled={!selectedFiles}
+                onClick={test}
+            >
                 Upload
             </button>
 
-            <div className={"alert alert-dark"} role={"alert"}>
+            <div className="alert alert-light" role="alert">
                 {message}
             </div>
 
             <div className="card">
                 <div className="card-header">List of Files</div>
                 <ul className="list-group list-group-flush">
-                    {fileInfo &&
-                    fileInfo.map((file, index) => (
+                    {fileInfos &&
+                    fileInfos.map((file, index) => (
                         <li className="list-group-item" key={index}>
                             <a href={file.url}>{file.name}</a>
                         </li>
                     ))}
                 </ul>
             </div>
+
         </div>
     );
 };
 
-export default UploadFile;
+export default UploadFiles;
