@@ -8,6 +8,9 @@ import (
 	"path/filepath"
 )
 
+// SaveFileHandler : handles a POST form request for file
+// https://ramezanpour.net/post/2020/09/12/file-upload-using-go-gin
+
 func upload3d(c *gin.Context) {
 	file, err := c.FormFile("file")
 
@@ -33,13 +36,10 @@ func upload3d(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H {
 		"message": "file successfully uploaded",
-		"filename": newFileName,
+		"filename": "done-" + newFileName,
 	})
 }
 
-
-// SaveFileHandler : handles a POST form request for file
-// https://ramezanpour.net/post/2020/09/12/file-upload-using-go-gin
 func upload2d(c *gin.Context) {
 	file, err := c.FormFile("file")
 
@@ -65,14 +65,14 @@ func upload2d(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H {
 		"message": "file successfully uploaded",
-		"filename": newFileName,
+		"filename": "done-" + newFileName,
 	})
 }
 
 func main() {
 	router := gin.Default()
 
-	router.Static("/image", "./tmp")
+	router.Static("/text", "./tmp")
 
 	router.POST("/upload2d", upload2d)
 	router.POST("/upload3d", upload3d)
