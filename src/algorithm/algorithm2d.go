@@ -1,8 +1,11 @@
 package algorithm
 
 import (
+	"bufio"
 	"fmt"
 	"models"
+	"os"
+	"path/filepath"
 )
 
 func Select(S *models.Graph2D) (*models.Point2D, *models.Point2D) {
@@ -87,4 +90,29 @@ func PruneAndSplit(p *models.Point2D, q *models.Point2D, r *models.Point2D, S *m
 	U, _ := Split(p, r, S)
 	L, _ := Split(r, q, S)
 	return U, L
+}
+
+func RunQuickHull(input string, output string) *models.Graph2D {
+	inputAbs, _ := filepath.Abs("./tmp/" + input)
+	inputFile, _ := os.Open(inputAbs)
+	g, _ := models.Import(inputFile)
+	inputFile.Close()
+
+	var convex *models.Graph2D
+	convex = new(models.Graph2D)
+	p, q := Select(g)
+	convex.Points = append(convex.Points, *p)
+	convex.Points = append(convex.Points, *q)
+	R, L := Split(p, q, g)
+	QuickHull(p, q, R, convex)
+	QuickHull(q, p, L, convex)
+
+	outputAbs, _ := filepath.Abs("./tmp/" + output)
+	outputFile, _ := os.Create(outputAbs)
+	writer := bufio.NewWriter(outputFile)
+	convex.Export(writer)
+	writer.Flush()
+	outputFile.Close()
+
+	return convex
 }

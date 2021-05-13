@@ -1,70 +1,69 @@
 package main
 
 import (
-	"algorithm"
 	"bufio"
 	"fmt"
+	quickhull "github.com/markus-wa/quickhull-go"
 	"models"
 	"os"
 	"path/filepath"
 )
 
 func main() {
-	abs, _ := filepath.Abs("./sample/graph2d-1000.txt")
+	abs, _ := filepath.Abs("./sample/graph3d-1000.txt")
 	file, err := os.Open(abs)
 
 	if err != nil {
 		fmt.Print(err)
 	}
 
-	g, err1 := models.Import(file)
+	g, err1 := models.Import3(file)
 	if err1 != nil {
 		fmt.Errorf("ha")
 	}
 	file.Close()
 
-	var convex *models.Graph2D
-	convex = new(models.Graph2D)
+	convex := new(models.Graph3D)
+	convex.Points = new(quickhull.QuickHull).ConvexHull(g.Points, true, false, 0).Vertices
 
-	p, q := algorithm.Select(g)
-	convex.Points = append(convex.Points, *p)
-	convex.Points = append(convex.Points, *q)
-	fmt.Println("p: ", *p)
-	fmt.Println("q: ", *q)
+	//fmt.Println(hull.Vertices) // does not contain (4,4,1)
+	//fmt.Println(hull.Triangles()) // triangles that make up the convex hull - [][3]r3.Vector, where each vector is a corner of the triangle
 
-	R, L := algorithm.Split(p, q, g)
-	//fmt.Println("R: ", *R)
-	//fmt.Println("L: ", *L)
-
-	//fmt.Println("p: ", *p)
-
-	algorithm.QuickHull(p, q, R, convex)
-
-	algorithm.QuickHull(q, p, L, convex)
-
-	//fmt.Println("q: ", *q)
-	//test := algorithm.FarthestPoint(p, q, R)
-	//test.Print()
-	//
-	//R1, _ := algorithm.Split(p, test, R)
-	//test1 := algorithm.FarthestPoint(p, test, R1)
-	//test1.Print()
-
-	//fmt.Println(L)
-
-	//p.Print()
-	//
-	//algorithm.QuickHull(p, q, R)
-	//
-	//q.Print()
-	//
-	//algorithm.QuickHull(q, p, L)
-
-	//g.Print()
-	//
-	file1, _ := os.Create("./sample/graph2d-1000-convex.txt")
+	file1, _ := os.Create("./sample/graph3d-1000-convex.txt")
 	writer := bufio.NewWriter(file1)
-	convex.Export(writer)
+	convex.Export3(writer)
 	writer.Flush()
 	file1.Close()
+
+	//abs, _ := filepath.Abs("./sample/graph2d-1000.txt")
+	//file, err := os.Open(abs)
+	//
+	//if err != nil {
+	//	fmt.Print(err)
+	//}
+	//
+	//g, err1 := models.Import(file)
+	//if err1 != nil {
+	//	fmt.Errorf("ha")
+	//}
+	//file.Close()
+	//
+	//var convex *models.Graph2D
+	//convex = new(models.Graph2D)
+	//
+	//p, q := algorithm.Select(g)
+	//convex.Points = append(convex.Points, *p)
+	//convex.Points = append(convex.Points, *q)
+	//
+	//R, L := algorithm.Split(p, q, g)
+	//
+	//algorithm.QuickHull(p, q, R, convex)
+	//
+	//algorithm.QuickHull(q, p, L, convex)
+	//
+	//file1, _ := os.Create("./sample/graph2d-1000-convex.txt")
+	//writer := bufio.NewWriter(file1)
+	//convex.Export(writer)
+	//writer.Flush()
+	//file1.Close()
 }
