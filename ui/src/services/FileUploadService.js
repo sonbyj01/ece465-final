@@ -4,7 +4,7 @@ const upload = (file, onUploadProgress) => {
     const formData = new FormData();
     formData.append('file', file);
 
-    return http.post('/upload', formData, {
+    return http.post('/upload2d', formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         },

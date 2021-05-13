@@ -72,6 +72,8 @@ func upload2d(c *gin.Context) {
 func main() {
 	router := gin.Default()
 
+	router.Static("/image", "./tmp")
+
 	router.POST("/upload2d", upload2d)
 	router.POST("/upload3d", upload3d)
 
